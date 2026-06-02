@@ -352,7 +352,7 @@ ON e1.dept_id = d.dept_id;
 /*
 
 ====================================================
-TOPICS COVERED
+Topics covered for today 
 ====================================================
 
 ✔ INNER JOIN
