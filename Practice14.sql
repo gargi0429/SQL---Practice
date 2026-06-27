@@ -31,12 +31,6 @@ CREATE TABLE employee_projects(
 );
 
 
-/*
-====================================================
-INSERT DATA
-====================================================
-*/
-
 INSERT INTO departments VALUES
 (1,'HR'),
 (2,'Finance'),
@@ -86,47 +80,44 @@ INSERT INTO employee_projects VALUES
 (109,5,40),
 (111,1,30);
 
-
-/*
-====================================================
-INTERVIEW QUESTIONS
-====================================================
-*/
-
-
 -- Q1.
 -- Display employee name along with their department name.
 
-
+Select emp_name, dept_name from employees e inner join departments d on e.dept_id = d.dept_id;
 
 -- Q2.
 -- Display all employees and their department names.
 -- Employees without departments should also appear.
 
-
+Select e.emp_name, d.dept_name from employees e left join departments d on e.dept_id = d.dept_id
+UNION ALL  
+Select e.emp_name, d.dept_name from departments d right join employees e on e.dept_id = d.dept_id;
 
 -- Q3.
 -- Find all departments that currently have no employees.
 
-
+select dept_name from departments d left join employees e on e.dept_id = d.dept_id where e.emp_id is null;
 
 -- Q4.
 -- Display every employee along with their manager's name.
 -- (Use SELF JOIN)
 
-
+select e.emp_name, m.emp_name from employees e inner join employees m on e.manager_id = m.emp_id;
 
 -- Q5.
 -- Find employees who are working on more than one project.
 -- Show employee name and total number of projects.
 
-
+Select e.emp_id, e.emp_name, count(ep.project_id) as Project_Count from employees e join employee_projects ep on e.emp_id = ep.emp_id
+group by e.emp_id, e.emp_name having count(ep.project_id) > 1;
 
 -- Q6.
 -- Display employee name, department name, project name and hours worked.
 -- (Use multiple JOINs)
 
-
+select e.emp_name, d.dept_name, ep.projects_name from employees e 
+left join departments d on e.dept_id = d.dept_id 
+right join employee_projects ep on e.emp_id = ep.emp_id;
 
 -- Q7.
 -- Find the department having the highest average salary.
