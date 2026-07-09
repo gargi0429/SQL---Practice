@@ -164,22 +164,48 @@ select emp_id, emp_name, department, salary,
 -- Q16. Calculate the cumulative average salary
 -- ordered by joining date.
 
-
+With Cum_avg as (
+ select emp_id, emp_name, salary, avg(salary) over (order by joining_date rows between unbounded preceding and current row) as cum_avg from employees
+)
+select emp_id, emp_name, salary 
+ from Cum_avg;
+ 
+ select * from employees limit 5;
+ 
 
 -- Q17. Find the second highest salary
 -- in every department.
 
-
+with cte_sec as
+(
+select emp_id, emp_name, salary, department, dense_rank() over (partition by department order by salary desc) as sec_highest
+from employees 
+)
+select emp_id, emp_name, salary, department from cte_sec
+where sec_highest = 2;
 
 -- Q18. Find employees who share the same salary
 -- with one or more employees.
 
+with cte_same as
+(
+select emp_id, emp_name, salary, count(*) over (partition by salary) as same from employees 
+)
+select emp_id, emp_name, salary from cte_same where same > 1;
 
 
 -- Q19. Display each employee's salary contribution
 -- as a percentage of the company's total salary.
 
-
+With cte as
+(
+select emp_id, emp_name, salary, salary * 100.0 / (select sum(salary) from employees) as contri from employees)
+select emp_id, emp_name, salary, contri from cte;
 
 -- Q20. Display each employee's salary contribution
 -- as a percentage of their department's total salary.
+
+With cte as
+(
+select emp_id, emp_name, salary, department, salary * 100.0 / sum(salary) OVER(PARTITION BY department) as contri from employees)
+select emp_id, emp_name, salary, department, contri from cte;
