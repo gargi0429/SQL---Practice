@@ -71,15 +71,74 @@ select emp_name, department, salary, d_rnk from CTE;
 
 -- 6. Find employees whose salary is higher than their manager's salary.	
 
-
+with cte_join as (
+select e.emp_name, e.salary as emp_sal, m.emp_name as manager_name, m.salary as manager_sal
+ from employees e inner join employees m on  e.manager_id = m.emp_id)
+select emp_name, emp_sal, manager_name, manager_sal from cte_join where emp_sal > manager_sal;		
 
 -- 7. Display each employee along with the average salary of their department.
 
+ with cte as(
+select emp_name, salary, department, avg(salary) over (partition by department ) as avg_sal from employees) 
+select emp_name, salary, department, avg_sal from cte;
+
 -- 8. Find employees hired after the average hire date of their department.
+
+with cte as
+(
+select emp_name, department,
+        hire_date, avg(hire_date) over (partition by department) as avg_date from employees )
+
+select emp_name, department,
+        hire_date from cte where hire_date > avg_date;
 
 -- 9. Find the difference between each employee's salary and their department's average salary.
 
+with cte as
+(
+select 
+        emp_name,
+        department,
+        salary, avg(salary) over (partition by department) as dept_avg_sal from employees  )
+select
+    emp_name,
+    department,
+    salary,
+    dept_avg_sal, (salary - dept_avg_sal) as sal_diff from cte ;
+
 -- 10. Using a RECURSIVE CTE, display the complete employee hierarchy starting from the top-level managers.
 
-=========================================================
-*/
+WITH RECURSIVE EmployeeHierarchy AS
+(
+    -- Anchor Member (Top-level managers)
+    SELECT
+        emp_id,
+        emp_name,
+        manager_id,
+        department,
+        1 AS level
+    FROM Employees
+    WHERE manager_id IS NULL
+
+    UNION ALL
+
+    -- Recursive Member
+    SELECT
+        e.emp_id,
+        e.emp_name,
+        e.manager_id,
+        e.department,
+        eh.level + 1
+    FROM Employees e
+    INNER JOIN EmployeeHierarchy eh
+        ON e.manager_id = eh.emp_id
+)
+
+SELECT
+    emp_id,
+    emp_name,
+    manager_id,
+    department,
+    level
+FROM EmployeeHierarchy
+ORDER BY level, emp_id;
