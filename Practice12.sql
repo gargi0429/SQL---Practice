@@ -134,6 +134,7 @@ WHERE salary IN
 
 -- Q15. Find employees earning more than all employees in HR department.
 
+
 -- Q16. Show employee name along with manager name using SELF JOIN.
 
 -- Q17. Find employees who earn more than their manager.
