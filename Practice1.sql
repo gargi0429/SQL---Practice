@@ -81,6 +81,7 @@ Select avg(salary) as AVG_SALARY, department from employees group by department;
 Select department, count(name) from employees group by department having count(*) > 2;
 
 
+
 /* 14. Find the second highest salary */
 
 Select * from employees order by salary desc limit 1 offset 1;

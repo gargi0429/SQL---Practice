@@ -142,3 +142,7 @@ SELECT
     level
 FROM EmployeeHierarchy
 ORDER BY level, emp_id;
+
+Select 1 as n
+
+
